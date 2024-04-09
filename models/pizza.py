@@ -1,25 +1,17 @@
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import MetaData
 from sqlalchemy_serializer import SerializerMixin
+from models import db
 
-metadata = MetaData(naming_convention={
-    "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
-})
+class Pizza(db.Model, SerializerMixin):
+    __tablename__ = 'pizzas'
 
-db = SQLAlchemy(metadata=metadata)
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String, unique=True)
+    ingredients = db.Column(db.String)
+    price = db.Column(db.Integer) 
+    
 
+    restaurantpizzas = db.relationship('RestaurantPizza', backref='pizza', lazy=True)
 
-# class Pizza(db.Model, SerializerMixin):
-#     __tablename__ = 'pizzas'
-
-#     serialize_rules = ('-restaurants.pizzas',)
-
-#     id = db.Column(db.Integer, primary_key=True)
-#     name = db.Column(db.String, unique=True)
-#     toppings = db.Column(db.String)
-#     price = db.Column(db.Integer)
-
-#     restaurants = db.relationship('RestaurantPizza', backref='pizza', lazy=True)
-
-#     def __repr__(self):
-#         return f'<Pizza {self.name} with toppings: {self.toppings}>'
+    def __repr__(self):
+        return f'<Pizza {self.name} with ingredients: {self.ingredients}>'
