@@ -14,4 +14,4 @@ class Pizza(db.Model, SerializerMixin):
     restaurantpizzas = db.relationship('RestaurantPizza', backref='pizza', lazy=True)
 
     def __repr__(self):
-        return f'<Pizza {self.name} with ingredients: {self.ingredients}>'
+        return f'<Pizza {self.name} with ingredients: {self.ingredients},  price: {self.price}>'
