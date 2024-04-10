@@ -11,9 +11,9 @@ class Restaurant(db.Model, SerializerMixin):
     address = db.Column(db.String(100))  
     
     @validates('name')
-    def validate_name(self, key, name):
-        if not name.strip():
-            raise ValueError("Restaurant name cannot be empty")
+    def validate_name(self,key,  name):
+        if len(name.strip()) > 50:
+            raise ValueError("Restaurant name must be less than 50 characters")
         return name
     
     restaurantpizzas = db.relationship('RestaurantPizza', backref='restaurant', lazy=True)
