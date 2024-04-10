@@ -12,17 +12,17 @@ fake = Faker()
 app = create_app()
 
 with app.app_context():
-    # Delete existing data
+  
     db.drop_all()
     db.create_all()
 
-    # Set to keep track of used restaurant names
+    
     used_restaurant_names = set()
 
-    # Seed Restaurants
+    
     for _ in range(20):
         restaurant_name = fake.company()
-        # Ensure unique restaurant name
+        
         while restaurant_name in used_restaurant_names:
             restaurant_name = fake.company()
 
@@ -34,13 +34,13 @@ with app.app_context():
         )
         db.session.add(restaurant)
 
-    # Set to keep track of used pizza names
+    
     used_pizza_names = set()
 
-    # Seed Pizzas
+    
     for _ in range(30):
         pizza_name = fake.word()
-        # Ensure unique pizza name
+       
         while pizza_name in used_pizza_names:
             pizza_name = fake.word()
 
@@ -48,12 +48,12 @@ with app.app_context():
 
         pizza = Pizza(
             name=pizza_name,
-            ingredients=', '.join(fake.words(5)),  # Generate random ingredients
+            ingredients=', '.join(fake.words(5)),  
             price=randint(5, 30)
         )
         db.session.add(pizza)
 
-    # Seed Restaurant Pizzas
+  
     restaurants = Restaurant.query.all()
     pizzas = Pizza.query.all()
     for restaurant in restaurants:
@@ -65,7 +65,7 @@ with app.app_context():
             )
             db.session.add(restaurant_pizza)
 
-    # Commit changes to the database
+    
     db.session.commit()
 
 print("Data seeded successfully!")
