@@ -1,4 +1,5 @@
 from flask import Flask, jsonify, request
+from flask_cors import CORS
 from models.restaurant import Restaurant
 from models.pizza import Pizza
 from models.restaurantpizza import RestaurantPizza
@@ -6,6 +7,7 @@ from models import db
 
 def create_app():
     app = Flask(__name__)
+    CORS(app)
     app.config.from_object('config.Config')
     db.init_app(app)
 
@@ -54,34 +56,44 @@ def create_app():
         if not restaurant:
             return jsonify({'error': 'Restaurant not found'}), 404
         
-        # Delete associated restaurant pizzas
+       
         for restaurant_pizza in restaurant.restaurantpizzas:
             db.session.delete(restaurant_pizza)
 
-        # Delete the restaurant
+        
         db.session.delete(restaurant)
         db.session.commit()
 
         return '', 204
 
-    @app.route('/restaurants/<int:restaurant_id>/add_pizza', methods=['POST'])
-    def add_pizza_to_restaurant(restaurant_id):
+    @app.route('/restaurant_pizzas', methods=['POST'])
+    def create_restaurant_pizza():
         data = request.get_json()
-        pizza_id = data.get('pizza_id')
         price = data.get('price')
+        pizza_id = data.get('pizza_id')
+        restaurant_id = data.get('restaurant_id')
 
-        restaurant = Restaurant.query.get(restaurant_id)
-        if not restaurant:
-            return jsonify({'error': 'Restaurant not found'}), 404
-
+       
         pizza = Pizza.query.get(pizza_id)
         if not pizza:
             return jsonify({'error': 'Pizza not found'}), 404
 
+        
+        restaurant = Restaurant.query.get(restaurant_id)
+        if not restaurant:
+            return jsonify({'error': 'Restaurant not found'}), 404
+
+        
         restaurant_pizza = RestaurantPizza(restaurant=restaurant, pizza=pizza, price=price)
         db.session.add(restaurant_pizza)
         db.session.commit()
 
-        return jsonify({'message': 'Pizza added to restaurant successfully'}), 200
+       
+        pizza_data = {
+            'id': pizza.id,
+            'name': pizza.name,
+            'ingredients': pizza.ingredients
+        }
+        return jsonify(pizza_data), 201
 
     return app

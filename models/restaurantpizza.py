@@ -20,4 +20,4 @@ class RestaurantPizza(db.Model, SerializerMixin):
 
 
     def __repr__(self):
-        return f'<RestaurantPizza for Restaurant ID: {self.restaurant_id}, Pizza ID: {self.pizza_id}>'
+        return f'<RestaurantPizza for Restaurant ID: {self.restaurant_id}, Pizza ID: {self.pizza_id}, {self.price}>'
